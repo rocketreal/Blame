@@ -26,7 +26,7 @@ public class MainController : MonoBehaviour
     public GameObject Arows;
     public Sprite sprResumeButton;
     //public GameObject mPlayButton, mRateButton;
-    public Text TxtCountDown, TxtTime, txtTutorial;
+    public Text TxtCountDown, txtTutorial;
 
     public Button handPointButton;
 
@@ -62,11 +62,20 @@ public class MainController : MonoBehaviour
         GetBestScoreFromPrefs();
         SetBestScore();
         CheckMusicStatus();
-        AdmobController.Current.StartBanner();
-        AndroidGoogleAnalytics.instance.SetTrackerID("UA-71622172-1");
         AndroidGoogleAnalytics.instance.StartTracking();
+        AndroidGoogleAnalytics.instance.SetTrackerID("UA-71027817-2");
         endgamePopupController.Open();
+        AdmobController.Current.StartBanner();
+        StartCoroutine(IEShowInterstitial());
+        AndroidGoogleAnalytics.instance.SendView(KeyAnalytics.CATEGORY_GAMEPLAY);
     }
+
+    IEnumerator IEShowInterstitial()
+    {
+        yield return new WaitForSeconds(4f);
+        AdmobController.Current.ShowInterstitial();
+    }
+
 #if UNITY_EDITOR
     [MenuItem("GameSetting/Clear PlayerPrefs")]
     private static void NewMenuOption()
@@ -118,23 +127,24 @@ public class MainController : MonoBehaviour
     }
     public void CheckMusicStatus()
     {
-        if (GameData.Instance.Music)
-        {
-            if (bestMusicPlaying)
-            {
-                BGMusicBest.GetComponent<AudioSource>().Play();
-            }
-            else
-            {
-                BGMusicTime.GetComponent<AudioController>().PlayFadeIn();
-            }
-        }
-        else
-        {
-            BGMusicBest.GetComponent<AudioController>().StopFadeOut();
-            BGMusicTime.GetComponent<AudioController>().StopFadeOut();
-            BGMusicEnterGame.GetComponent<AudioController>().StopFadeOut();
-        }
+        AudioListener.pause = !GameData.Instance.Music;
+    //    if (GameData.Instance.Music)
+    //    {
+    //        //if (bestMusicPlaying)
+    //        //{
+    //        //    BGMusicBest.GetComponent<AudioSource>().Play();
+    //        //}
+    //        //else
+    //        //{
+    //        //    BGMusicTime.GetComponent<AudioController>().PlayFadeIn();
+    //        //}
+    //    }
+    //    else
+    //    {
+    //        //BGMusicBest.GetComponent<AudioController>().StopFadeOut();
+    //        //BGMusicTime.GetComponent<AudioController>().StopFadeOut();
+    //        //BGMusicEnterGame.GetComponent<AudioController>().StopFadeOut();
+    //    }
     }
 
     private void GetKeyBack()
@@ -182,7 +192,6 @@ public class MainController : MonoBehaviour
     public void StartGame()
     {
         isCalledActiveEnemy = false;
-        GameData.Instance.isEndGame = false;
         GameData.Instance.canPlay = true;
 
         // Active Enemys
@@ -210,12 +219,9 @@ public class MainController : MonoBehaviour
 
     public void EndGame()
     {
-        AndroidGoogleAnalytics.instance.SendTiming("time", (long)(flTime * 1000));
-        AndroidGoogleAnalytics.instance.SendView("gameplay");
-        AndroidGoogleAnalytics.instance.SendEvent("Trong", "Dung", "he he");
-        AndroidGoogleAnalytics.instance.SendMessage("Rocket");
+        AndroidGoogleAnalytics.instance.SendTiming("Time Record", (long)(flTime * 1000));
         playCount++;
-        if (playCount % 5 == 0 && playCount > 0)
+        if (playCount % GameConst.CountDieTimeToShowAds == 0 && playCount > 0)
         {
             AdmobController.Current.ShowInterstitial();
         }
@@ -256,7 +262,7 @@ public class MainController : MonoBehaviour
         // Update Best
         if (flBest < flTime)
         {
-            if (playCount % 2 == 0 && playCount > 2)
+            if (playCount > 2)
             {
                 AdmobController.Current.ShowInterstitial();
             }
@@ -280,6 +286,8 @@ public class MainController : MonoBehaviour
     }
     public void PlayButtonOnclick()
     {
+        //Ngừng gọi quảng cáo full
+        StopCoroutine("IEShowInterstitial");
         ResetTime();
         if (IsPlayTutorial)
         {
@@ -294,15 +302,20 @@ public class MainController : MonoBehaviour
         // Đặt lại giá trị cờ Kết thúc game
         GameData.Instance.isEndGame = false;
         GameData.Instance.isStartGame = true;
+        GameData.Instance.canPlay = false;
         if (playCount < 3)
         {
             ShowTutorialText();
         }
+        AndroidGoogleAnalytics.instance.SendEvent
+            (KeyAnalytics.CATEGORY_GAMEPLAY, KeyAnalytics.ACTION_BUTTON_CLICK + "Play", KeyAnalytics.LABEL_CLICK);
     }
 
     public void RateButtonOnclick()
     {
         Application.OpenURL("https://play.google.com/store/apps/details?id=com.rocket.game.blame.collide.avoidance");
+        AndroidGoogleAnalytics.instance.SendEvent
+                (KeyAnalytics.CATEGORY_GAMEPLAY, KeyAnalytics.ACTION_BUTTON_CLICK + "Rate", KeyAnalytics.LABEL_CLICK);
     }
 
     public void PlayerDie()
@@ -334,6 +347,7 @@ public class MainController : MonoBehaviour
 
     public void ShowHandPointButton()
     {
+        handPointButton.transform.position = mPlayerTouch.transform.position;
         handPointButton.gameObject.SetActive(true);
     }
 
@@ -361,5 +375,6 @@ public class MainController : MonoBehaviour
     {
         StopCoroutine("IEHideTutorialText");
     }
+
 
 }

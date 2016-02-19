@@ -57,6 +57,7 @@ public class ItemController : MonoBehaviour
         transform.position = RandomPosInCicle();
         time = totalTime;
         oneSecond = 0;
+        transform.eulerAngles = Vector3.zero;
     }
 
     internal void Hide()
@@ -86,7 +87,6 @@ public class ItemController : MonoBehaviour
 
     private void PlaySound()
     {
-        Debug.Log("Tick "+ time);
         timeItem.gameObject.GetComponent<AudioSource>().Play();
     }
 
