@@ -13,6 +13,10 @@ public class MainController : MonoBehaviour
     void Awake()
     {
         Current = this;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        Adunion4Unity.Instance.preloadBannerAd();
+        AndroidGoogleAnalytics.Instance.StartTracking();
+        AndroidGoogleAnalytics.Instance.SetTrackerID("UA-71249994-4");
     }
 
     // Public Members
@@ -62,12 +66,12 @@ public class MainController : MonoBehaviour
         GetBestScoreFromPrefs();
         SetBestScore();
         CheckMusicStatus();
-        AndroidGoogleAnalytics.instance.StartTracking();
-        AndroidGoogleAnalytics.instance.SetTrackerID("UA-71027817-2");
         endgamePopupController.Open();
-        AdmobController.Current.StartBanner();
+        Adunion4Unity.Instance.showBannerAd(Adunion4Unity.BAD_POS_TOP_CENTER);
+        //AdmobController.Current.StartBanner();
         StartCoroutine(IEShowInterstitial());
-        AndroidGoogleAnalytics.instance.SendView(KeyAnalytics.CATEGORY_GAMEPLAY);
+        AndroidGoogleAnalytics.Instance.SendView(KeyAnalytics.CATEGORY_GAMEPLAY);
+        Debug.Log("start");
     }
 
     IEnumerator IEShowInterstitial()
@@ -219,7 +223,7 @@ public class MainController : MonoBehaviour
 
     public void EndGame()
     {
-        AndroidGoogleAnalytics.instance.SendTiming("Time Record", (long)(flTime * 1000));
+        AndroidGoogleAnalytics.Instance.SendTiming("Time Record", (long)(flTime * 1000));
         playCount++;
         if (playCount % GameConst.CountDieTimeToShowAds == 0 && playCount > 0)
         {
@@ -309,14 +313,14 @@ public class MainController : MonoBehaviour
         {
             ShowTutorialText();
         }
-        AndroidGoogleAnalytics.instance.SendEvent
+        AndroidGoogleAnalytics.Instance.SendEvent
             (KeyAnalytics.CATEGORY_GAMEPLAY, KeyAnalytics.ACTION_BUTTON_CLICK + "Play", KeyAnalytics.LABEL_CLICK);
     }
 
     public void RateButtonOnclick()
     {
         Application.OpenURL("https://play.google.com/store/apps/details?id=com.rocket.game.blame.collide.avoidance");
-        AndroidGoogleAnalytics.instance.SendEvent
+        AndroidGoogleAnalytics.Instance.SendEvent
                 (KeyAnalytics.CATEGORY_GAMEPLAY, KeyAnalytics.ACTION_BUTTON_CLICK + "Rate", KeyAnalytics.LABEL_CLICK);
     }
 

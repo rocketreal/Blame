@@ -24,58 +24,58 @@ public class AndroidAdmob
     }
     public void Init(string bannerID, string interstitialID)
     {
-        AndroidAdMobController.instance.Init(bannerID);
-        AndroidAdMobController.instance.SetInterstisialsUnitID(interstitialID);
-        AndroidAdMobController.instance.OnInterstitialLoaded += OnInterstisialsLoaded;
-        AndroidAdMobController.instance.OnInterstitialOpened += OnInterstisialsOpen;
-        AndroidAdMobController.instance.OnInterstitialClosed += OnInterstisialsClose;
+        AndroidAdMobController.Instance.Init(bannerID);
+        AndroidAdMobController.Instance.SetInterstisialsUnitID(interstitialID);
+        AndroidAdMobController.Instance.OnInterstitialLoaded += OnInterstisialsLoaded;
+        AndroidAdMobController.Instance.OnInterstitialOpened += OnInterstisialsOpen;
+        AndroidAdMobController.Instance.OnInterstitialClosed += OnInterstisialsClose;
         StartInterstitialAd();
         LoadInterstitialAd();
     }
 
     private void StartInterstitialAd()
     {
-        AndroidAdMobController.instance.StartInterstitialAd();
+        AndroidAdMobController.Instance.StartInterstitialAd();
     }
 
     private void LoadInterstitialAd()
     {
-        AndroidAdMobController.instance.LoadInterstitialAd();
+        AndroidAdMobController.Instance.LoadInterstitialAd();
     }
 
     public void ShowInterstitialAd()
     {
-        AndroidAdMobController.instance.ShowInterstitialAd();
+        AndroidAdMobController.Instance.ShowInterstitialAd();
     }
 
     public void CreateBannerCustomPos()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(300, 100, GADBannerSize.BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(300, 100, GADBannerSize.BANNER);
     }
 
     public void CreateBannerUpperLeft()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(TextAnchor.UpperLeft, GADBannerSize.BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(TextAnchor.UpperLeft, GADBannerSize.BANNER);
     }
 
     public void CreateBannerUpperCneter()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(TextAnchor.UpperCenter, GADBannerSize.BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(TextAnchor.UpperCenter, GADBannerSize.BANNER);
     }
 
     public void CreateBannerBottomLeft()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(TextAnchor.LowerLeft, GADBannerSize.BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(TextAnchor.LowerLeft, GADBannerSize.BANNER);
     }
 
     public void CreateBannerBottomCenter()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(TextAnchor.LowerCenter, GADBannerSize.BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(TextAnchor.LowerCenter, GADBannerSize.BANNER);
     }
 
     public void CreateBannerBottomRight()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(TextAnchor.LowerRight, GADBannerSize.BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(TextAnchor.LowerRight, GADBannerSize.BANNER);
     }
 
     public void HideBanner()
@@ -96,18 +96,18 @@ public class AndroidAdmob
 
     public void BannerDestroy()
     {
-        AndroidAdMobController.instance.DestroyBanner(banner.id);
+        AndroidAdMobController.Instance.DestroyBanner(banner.id);
         banner = null;
     }
 
     public void SmartTOP()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(TextAnchor.UpperCenter, GADBannerSize.SMART_BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(TextAnchor.UpperCenter, GADBannerSize.SMART_BANNER);
     }
 
     public void SmartBottom()
     {
-        banner = AndroidAdMobController.instance.CreateAdBanner(TextAnchor.LowerCenter, GADBannerSize.SMART_BANNER);
+        banner = AndroidAdMobController.Instance.CreateAdBanner(TextAnchor.LowerCenter, GADBannerSize.SMART_BANNER);
     }
 
     public void ChangePostToMiddle()
