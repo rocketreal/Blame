@@ -272,6 +272,8 @@ public class MainController : MonoBehaviour
         }
 
         StopIEHideTutorialText();
+
+        StartCoroutine(IEShowInterstitial());
     }
 
     public float GetBestScore()
