@@ -35,7 +35,7 @@ public class Adunion4Unity
 	
 	private void init ()
 	{
-		if (null == mAdUnionCls) {
+        if (null == mAdUnionCls) {
 			mAdUnionCls = new AndroidJavaClass ("com.ltad.core.Adunion4Unity");
 		}
 		

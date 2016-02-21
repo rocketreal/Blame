@@ -20,8 +20,9 @@ public class CountDownController : MonoBehaviour
             {
                 flCountDown -= Time.deltaTime;
                 oneSecond += Time.deltaTime;
-                if (oneSecond>=1.0f)
+                if (oneSecond >= 1.0f)
                 {
+                    oneSecond = 0;
                     gameObject.GetComponent<Text>().text = (int)flCountDown + "";
                     PlaySound();
                 }
@@ -39,11 +40,13 @@ public class CountDownController : MonoBehaviour
 
     private void PlaySound()
     {
-        
+        Debug.Log(audio);
+        audio.Play();
     }
 
     float flCountDown;
     bool isStartCount;
 
     public GameObject GobjMainController;
+    public AudioSource audio;
 }

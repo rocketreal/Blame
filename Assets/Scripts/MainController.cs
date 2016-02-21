@@ -14,7 +14,7 @@ public class MainController : MonoBehaviour
     {
         Current = this;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        Adunion4Unity.Instance.preloadBannerAd();
+        //Adunion4Unity.Instance.preloadBannerAd();
         AndroidGoogleAnalytics.Instance.StartTracking();
         AndroidGoogleAnalytics.Instance.SetTrackerID("UA-71249994-4");
     }
@@ -28,7 +28,6 @@ public class MainController : MonoBehaviour
     public GameObject BGMusicBest;
     public GameObject BGMusicEnterGame;
     public GameObject Arows;
-    public Sprite sprResumeButton;
     //public GameObject mPlayButton, mRateButton;
     public Text TxtCountDown, txtTutorial;
 
@@ -43,12 +42,13 @@ public class MainController : MonoBehaviour
     // Private Members
     float flTime, flBest;
     bool isCalledActiveEnemy, flagChangedMusic;
-    string dataTxtBestTime = "dataTxtBestTime";
     bool isFirstTime;
     const int DelayTimeItem = 5;
     bool bestMusicPlaying;
     int playCount;
     bool isTutorialTextOn = true;
+    private float timeDelayShowAds = 4;
+    private float gameTime;
 
     public bool IsPlayTutorial
     {
@@ -67,11 +67,10 @@ public class MainController : MonoBehaviour
         SetBestScore();
         CheckMusicStatus();
         endgamePopupController.Open();
-        Adunion4Unity.Instance.showBannerAd(Adunion4Unity.BAD_POS_TOP_CENTER);
-        //AdmobController.Current.StartBanner();
+        //Adunion4Unity.Instance.showBannerAd(Adunion4Unity.BAD_POS_TOP_CENTER);
+        AdmobController.Current.StartBanner();
         StartCoroutine(IEShowInterstitial());
         AndroidGoogleAnalytics.Instance.SendView(KeyAnalytics.CATEGORY_GAMEPLAY);
-        Debug.Log("start");
     }
 
     IEnumerator IEShowInterstitial()
@@ -90,7 +89,7 @@ public class MainController : MonoBehaviour
 
     private void GetBestScoreFromPrefs()
     {
-        flBest = PlayerPrefs.GetFloat(dataTxtBestTime, 0.0f);
+        flBest = PlayerPrefs.GetFloat(KeyPlayerPrefs.dataTxtBestTime, 0.0f);
     }
 
     private void SetBestScore()
@@ -128,27 +127,42 @@ public class MainController : MonoBehaviour
         {
             GetKeyBack();
         }
+
+        UpdateCallShowAds();
+    }
+
+    private void UpdateCallShowAds()
+    {
+        if (false == GameData.Instance.isStartGame)
+        {
+            if (Time.time - gameTime > timeDelayShowAds)
+            {
+                Debug.Log("ShowAds");
+                gameTime = Time.time;
+                AdmobController.Current.ShowInterstitial();
+            }
+        }
     }
     public void CheckMusicStatus()
     {
         AudioListener.pause = !GameData.Instance.Music;
-    //    if (GameData.Instance.Music)
-    //    {
-    //        //if (bestMusicPlaying)
-    //        //{
-    //        //    BGMusicBest.GetComponent<AudioSource>().Play();
-    //        //}
-    //        //else
-    //        //{
-    //        //    BGMusicTime.GetComponent<AudioController>().PlayFadeIn();
-    //        //}
-    //    }
-    //    else
-    //    {
-    //        //BGMusicBest.GetComponent<AudioController>().StopFadeOut();
-    //        //BGMusicTime.GetComponent<AudioController>().StopFadeOut();
-    //        //BGMusicEnterGame.GetComponent<AudioController>().StopFadeOut();
-    //    }
+        //    if (GameData.Instance.Music)
+        //    {
+        //        //if (bestMusicPlaying)
+        //        //{
+        //        //    BGMusicBest.GetComponent<AudioSource>().Play();
+        //        //}
+        //        //else
+        //        //{
+        //        //    BGMusicTime.GetComponent<AudioController>().PlayFadeIn();
+        //        //}
+        //    }
+        //    else
+        //    {
+        //        //BGMusicBest.GetComponent<AudioController>().StopFadeOut();
+        //        //BGMusicTime.GetComponent<AudioController>().StopFadeOut();
+        //        //BGMusicEnterGame.GetComponent<AudioController>().StopFadeOut();
+        //    }
     }
 
     private void GetKeyBack()
@@ -223,16 +237,15 @@ public class MainController : MonoBehaviour
 
     public void EndGame()
     {
+        gameTime = Time.time + 5;
         AndroidGoogleAnalytics.Instance.SendTiming("Time Record", (long)(flTime * 1000));
         playCount++;
-        if (playCount % GameConst.CountDieTimeToShowAds == 0 && playCount > 0)
-        {
-            AdmobController.Current.ShowInterstitial();
-        }
+
 
         GameData.Instance.isEndGame = true;
         GameData.Instance.canPlay = false;
-        // Reset Enemy position
+        GameData.Instance.isStartGame = false;
+        // Reset Enemy 
         foreach (GameObject enemy in arrEnemies)
         {
             enemy.GetComponent<EnemyController>().EndGame();
@@ -258,7 +271,6 @@ public class MainController : MonoBehaviour
         if (isFirstTime == false)
         {
             isFirstTime = true;
-            mGobjPlayButton.GetComponent<Image>().sprite = sprResumeButton;
         }
 
         ShowResultPopup();
@@ -269,12 +281,17 @@ public class MainController : MonoBehaviour
             if (playCount > 2)
             {
                 AdmobController.Current.ShowInterstitial();
+                gameTime = Time.time + 20;
             }
             flBest = flTime;// flTime la diem cua ng choi
-            PlayerPrefs.SetFloat(dataTxtBestTime, flBest);
+            PlayerPrefs.SetFloat(KeyPlayerPrefs.dataTxtBestTime, flBest);
             mTxtBest.text = flBest.ToString("00.##", CultureInfo.InvariantCulture) + " s";
         }
-
+        if (playCount % GameConst.CountDieTimeToShowAds == 0 && playCount > 0)
+        {
+            AdmobController.Current.ShowInterstitial();
+            gameTime = Time.time + 20;
+        }
         StopIEHideTutorialText();
 
         //StartCoroutine(IEShowInterstitial());
@@ -282,7 +299,7 @@ public class MainController : MonoBehaviour
 
     public float GetBestScore()
     {
-        return PlayerPrefs.GetFloat(dataTxtBestTime, 0.0f);
+        return PlayerPrefs.GetFloat(KeyPlayerPrefs.dataTxtBestTime, 0.0f);
     }
 
     public void ResetTime()
@@ -309,6 +326,12 @@ public class MainController : MonoBehaviour
         GameData.Instance.isEndGame = false;
         GameData.Instance.isStartGame = true;
         GameData.Instance.canPlay = false;
+
+        foreach (GameObject enemy in arrEnemies)
+        {
+            enemy.GetComponent<EnemyController>().EndGame();
+        }
+
         if (playCount < 3)
         {
             ShowTutorialText();
@@ -319,9 +342,16 @@ public class MainController : MonoBehaviour
 
     public void RateButtonOnclick()
     {
-        Application.OpenURL("https://play.google.com/store/apps/details?id=com.rocket.game.blame.collide.avoidance");
+        Application.OpenURL("https://play.google.com/store/apps/details?id=com.rocket.cocangua.ludo.horseracing");
         AndroidGoogleAnalytics.Instance.SendEvent
                 (KeyAnalytics.CATEGORY_GAMEPLAY, KeyAnalytics.ACTION_BUTTON_CLICK + "Rate", KeyAnalytics.LABEL_CLICK);
+    }
+
+    public void OnClickButtonMoregame()
+    {
+        Application.OpenURL("https://play.google.com/store/apps/details?id=com.rocket.ludo.cangua");
+        AndroidGoogleAnalytics.Instance.SendEvent
+                (KeyAnalytics.CATEGORY_GAMEPLAY, KeyAnalytics.ACTION_BUTTON_CLICK + "Moregame", KeyAnalytics.LABEL_CLICK);
     }
 
     public void PlayerDie()
@@ -381,6 +411,8 @@ public class MainController : MonoBehaviour
     {
         StopCoroutine("IEHideTutorialText");
     }
+
+
 
 
 }
