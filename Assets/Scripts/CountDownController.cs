@@ -40,7 +40,6 @@ public class CountDownController : MonoBehaviour
 
     private void PlaySound()
     {
-        Debug.Log(audio);
         audio.Play();
     }
 
