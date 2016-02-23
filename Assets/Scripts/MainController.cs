@@ -14,7 +14,7 @@ public class MainController : MonoBehaviour
     {
         Current = this;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        //Adunion4Unity.Instance.preloadBannerAd();
+        Adunion4Unity.Instance.preloadBannerAd();
         AndroidGoogleAnalytics.Instance.StartTracking();
         AndroidGoogleAnalytics.Instance.SetTrackerID("UA-71249994-4");
     }
@@ -67,8 +67,8 @@ public class MainController : MonoBehaviour
         SetBestScore();
         CheckMusicStatus();
         endgamePopupController.Open();
-        //Adunion4Unity.Instance.showBannerAd(Adunion4Unity.BAD_POS_TOP_CENTER);
-        AdmobController.Current.StartBanner();
+        Adunion4Unity.Instance.showBannerAd(Adunion4Unity.BAD_POS_TOP_CENTER);
+        //AdmobController.Current.StartBanner();
         AndroidGoogleAnalytics.Instance.SendView(KeyAnalytics.CATEGORY_GAMEPLAY);
     }
 
