@@ -51,7 +51,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         // Scale tăng dần theo thời gian
-        if (GameData.Instance.canPlay)
+        if (GameData.Instance.isStartGame &&  GameData.Instance.canPlay)
         {
             if (transform.localScale.x < 1.5f)
             {

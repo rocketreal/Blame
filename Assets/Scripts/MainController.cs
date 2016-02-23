@@ -69,14 +69,7 @@ public class MainController : MonoBehaviour
         endgamePopupController.Open();
         //Adunion4Unity.Instance.showBannerAd(Adunion4Unity.BAD_POS_TOP_CENTER);
         AdmobController.Current.StartBanner();
-        StartCoroutine(IEShowInterstitial());
         AndroidGoogleAnalytics.Instance.SendView(KeyAnalytics.CATEGORY_GAMEPLAY);
-    }
-
-    IEnumerator IEShowInterstitial()
-    {
-        yield return new WaitForSeconds(4f);
-        AdmobController.Current.ShowInterstitial();
     }
 
 #if UNITY_EDITOR
@@ -137,7 +130,6 @@ public class MainController : MonoBehaviour
         {
             if (Time.time - gameTime > timeDelayShowAds)
             {
-                Debug.Log("ShowAds");
                 gameTime = Time.time;
                 AdmobController.Current.ShowInterstitial();
             }
@@ -278,7 +270,7 @@ public class MainController : MonoBehaviour
         // Update Best
         if (flBest < flTime)
         {
-            if (playCount > 2)
+            if (playCount > 0)
             {
                 AdmobController.Current.ShowInterstitial();
                 gameTime = Time.time + 20;
@@ -287,7 +279,7 @@ public class MainController : MonoBehaviour
             PlayerPrefs.SetFloat(KeyPlayerPrefs.dataTxtBestTime, flBest);
             mTxtBest.text = flBest.ToString("00.##", CultureInfo.InvariantCulture) + " s";
         }
-        if (playCount % GameConst.CountDieTimeToShowAds == 0 && playCount > 0)
+        if (playCount % GameConst.CountDieTimeToShowAds == 0)
         {
             AdmobController.Current.ShowInterstitial();
             gameTime = Time.time + 20;
