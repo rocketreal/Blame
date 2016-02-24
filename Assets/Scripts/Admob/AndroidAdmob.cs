@@ -46,6 +46,7 @@ public class AndroidAdmob
     public void ShowInterstitialAd()
     {
         AndroidAdMobController.Instance.ShowInterstitialAd();
+
     }
 
     public void CreateBannerCustomPos()

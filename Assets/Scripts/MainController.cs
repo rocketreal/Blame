@@ -131,6 +131,7 @@ public class MainController : MonoBehaviour
             if (Time.time - gameTime > timeDelayShowAds)
             {
                 gameTime = Time.time;
+                AndroidGoogleAnalytics.Instance.SendEvent("Interstitial", "Show", "UpdateCallShowAds");
                 AdmobController.Current.ShowInterstitial();
             }
         }
@@ -272,6 +273,7 @@ public class MainController : MonoBehaviour
         {
             if (playCount > 0)
             {
+                AndroidGoogleAnalytics.Instance.SendEvent("Interstitial", "Show", "ShowInterstitial Normal Score");
                 AdmobController.Current.ShowInterstitial();
                 gameTime = Time.time + 20;
             }
@@ -281,6 +283,7 @@ public class MainController : MonoBehaviour
         }
         if (playCount % GameConst.CountDieTimeToShowAds == 0)
         {
+            AndroidGoogleAnalytics.Instance.SendEvent("Interstitial", "Show", "ShowInterstitial Best Score");
             AdmobController.Current.ShowInterstitial();
             gameTime = Time.time + 20;
         }
